@@ -19,9 +19,7 @@ class CategoryUrlsTaker(ITaker, IObservable):
                 found_subCats=self.__getSubCategories(url,data, cat['title'])
                 if(len(found_subCats)>0):
                     sub_categories.append(found_subCats)
-        self.NotifyObservers(sub_categories)
-        #returns only subcategories 'cause main ones' don`t have products in it
-        
+        self.NotifyObservers(sub_categories)        
 
     def __getUrlData(self,url):
         try:
@@ -40,10 +38,16 @@ class CategoryUrlsTaker(ITaker, IObservable):
         res = []
         for cat in cats:
             tmp = cat.find('a')
-            res.append({
+            if(url not in tmp.get('href')):
+                res.append({
+                    'title':tmp.text,
+                    'url':tmp.get('href')
+                })
+            else:
+                res.append({
                 'title':tmp.text,
                 'url':url+tmp.get('href')
-            })
+                })
         return res
     
     def __getSubCategories(self, url, data, mainCategoryTitle):
@@ -53,11 +57,18 @@ class CategoryUrlsTaker(ITaker, IObservable):
         if(tmp_cats):
             cats = tmp_cats.find_all('a')
             for cat in cats:
-                res.append({
-                    'main_title':mainCategoryTitle,
-                    'title':cat.text,
-                    'url':url+cat.get('href')
-                })
+                if(url not in cat.get('href')):
+                    res.append({
+                        'main_title':mainCategoryTitle,
+                        'title':cat.text,
+                        'url':url+cat.get('href')
+                    })
+                else:
+                    res.append({
+                        'main_title':mainCategoryTitle,
+                        'title':cat.text,
+                        'url':cat.get('href')
+                    })
         return res
 
     def RegisterObserver(self, observer):

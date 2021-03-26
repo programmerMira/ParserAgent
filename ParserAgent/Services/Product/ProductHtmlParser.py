@@ -327,7 +327,6 @@ class ProductHtmlParser(IParser):
         except Exception as e:
             return None
         
-
     def __parsBuyWithProductUrls(self, data):
         if(not data):
             return None
@@ -336,12 +335,11 @@ class ProductHtmlParser(IParser):
         except Exception as e:
             return None
         
-
     def __parsFindWithThisProductKeyWords(self, data):
         if(not data):
             return None
         try:
-            words = list();
+            words = list()
             for key in data['searchTags']['tagsViewModels']:
                 words.append(key['text'])
             return words
